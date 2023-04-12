@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "npx tsc --outDir ./dist ./src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,9 @@
     "@types/node": "^18.15.11",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "botbuilder-adapter-slack": "^1.0.14",
+    "botkit": "^4.15.0"
   }
 }
