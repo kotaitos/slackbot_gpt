@@ -65,8 +65,6 @@ export async function answer_with_websearch(client: any, message: any, say: any,
         return '十分な検索結果が得られませんでした。'
     }
 
-    console.log(webResults)
-
     const now = new Date().toLocaleDateString()
 
     const prompt = `
