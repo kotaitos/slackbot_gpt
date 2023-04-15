@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { App } from '@slack/bolt'
-import { ask } from './ask';
+import { answer_with_websearch } from './websearch';
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -10,12 +10,26 @@ const app = new App({
     port: Number(process.env.PORT) || 3000
 });
 
-app.message(async ({ message, event, say }) => {
+let usingUser = new Set([]);
+
+app.message(async ({ client, message, event, say }) => {
     // イベントがトリガーされたチャンネルに say() でメッセージを送信します
-    if ('text' in event) {
+    if ('text' in event && 'user' in event) {
+        const user = event.user;
         const text = event.text;
-        const response = await ask(text)
-        await say(`${response}`);
+        try {
+            if (event.user in usingUser) {
+                await say(`<@${event.user}>さんの質問に対応中なのでお待ちください。`)
+            } else {
+                usingUser.add(event.user)
+                const response = await answer_with_websearch(client, message, say, user, text)
+                await say(`${response}`);
+                usingUser.delete(event.user)
+            }
+        } catch (e) {
+            console.log(e);
+            await say(`エラーが発生しました。\nError: ${e}`)
+        }
     }
   });
 
